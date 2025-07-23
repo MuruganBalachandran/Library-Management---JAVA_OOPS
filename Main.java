@@ -12,25 +12,39 @@ public class Main {
     
     public static void main(String[] args) throws Exception {
         preloadData();
-        System.out.println("Enter Email:");
-        String email = sc.nextLine();
-        System.out.println("Enter Password:");
-        String pass = sc.nextLine();
+        String cont = "y";
+        while (cont.equalsIgnoreCase("y")) {
+            System.out.println("Enter Email:");
+            String email = sc.nextLine();
+            System.out.println("Enter Password:");
+            String pass = sc.nextLine();
 
-        if (!users.containsKey(email) || !users.get(email).password.equals(pass)) {
-            System.out.println("Invalid Credentials!");
-            return;
+            if (!users.containsKey(email) || !users.get(email).password.equals(pass)) {
+                System.out.println("Invalid Credentials!");
+                System.out.print("Do you want to continue? (y/n): ");
+                cont = sc.nextLine();
+                continue;
+            }
+
+            User currentUser = users.get(email);
+            if (currentUser.role.equals("admin")) {
+                AuthService.adminMenu(currentUser, users, books, sc);
+            } else {
+                AuthService.borrowerMenu(currentUser, books, sc);
+            }
+
+            System.out.print("Do you want to continue? (y/n): ");
+            cont = sc.nextLine();
         }
-
-        User currentUser = users.get(email);
-        if (currentUser.role.equals("admin")) AuthService.adminMenu(currentUser, users, books, sc);
-        else AuthService.borrowerMenu(currentUser, books, sc);
+        System.out.println("Exiting Library Management System.");
     }
 
     static void preloadData() {
         users.put("admin@mail.com", new User("admin@mail.com", "admin123", "admin"));
         users.put("user@mail.com", new User("user@mail.com", "user123", "borrower"));
-          users.put("murugan@mail.com", new User("muugan@mail.com", "murugan", "borrower"));
+        users.put("murugan@mail.com", new User("muugan@mail.com", "murugan", "borrower"));
         users.put("student@mail.com", new User("student@mail.com", "student", "borrower"));
+
+        
     }
 }
